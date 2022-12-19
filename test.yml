@@ -1,0 +1,112 @@
+- name: Nexus Dashboard
+  hosts: mso
+  gather_facts: no
+
+  vars:
+    ig_name: "d2o-tme"
+    site_name: "prod-fabric"
+    pcv_name: default_pcv_name
+
+  tasks:
+    - name: Present Pre-Change analysis for updating epg
+      cisco.nd.nd_pcv:
+        ig_name: '{{ ig_name }}'
+        site_name: prod-fabric
+        name: test_update_epg
+        manual: |
+            [
+                {
+                    "fvAEPg": {
+                        "attributes": {
+                            "descr": "",
+                            "exceptionTag": "",
+                            "floodOnEncap": "disabled",
+                            "fwdCtrl": "none",
+                            "hasMcastSource": "no",
+                            "isAttrBasedEPg": "no",
+                            "matchT": "AtleastOne",
+                            "nameAlias": "",
+                            "pcEnfPref": "unenforced",
+                            "prefGrMemb": "exclude",
+                            "prio": "unspecified",
+                            "shutdown": "no",
+                            "dn": "uni/tn-common/ap-default/epg-epg",
+                            "name": "epg",
+                            "pcv_status": "created"
+                        },
+                        "children": [{
+                            "fvRsBd": {
+                                "attributes": {
+                                    "tnFvBDName": "",
+                                    "pcv_status": ""
+                                }
+                            }
+                        }]
+                    }
+                }
+            ]
+        state: present
+      register: present_epg
+
+    # - name: Get Nexus Dashboard version
+    #   cisco.nd.nd_version:
+    #     state: query
+    #   register: query_result
+
+    # - name: Verify query
+    #   assert:
+    #     that:
+    #       - query_result is changed
+
+    # # Delete pre-change job
+    # - name: Delete a pre_change analysis
+    #   cisco.nd.nd_pcv:
+    #     ig_name: '{{ ig_name }}'
+    #     site_name: '{{ site_name }}'
+    #     name: '{{ pcv_name }}'
+    #     state: absent
+    #     output_level: debug
+
+    # - name: Create a new Pre-Change analysis from file
+    #   cisco.nd.nd_pcv:
+    #     ig_name: '{{ ig_name }}'
+    #     site_name: '{{ site_name }}'
+    #     name: '{{ pcv_name }}'
+    #     file: config.json
+    #     state: present
+    #     output_level: debug
+
+    # - name: Get prechange validation status
+    #   cisco.nd.nd_pcv:
+    #     insights_group: "{{ ig_name }}"
+    #     site_name: "{{ site_name }}"
+    #     name: "{{ pcv_name }}"
+    #     state: query
+    #     output_level: debug
+    #   register: nd_pcv_status
+    #   until: nd_pcv_status.current.analysisStatus == "COMPLETED"
+    #   retries: 180
+
+    #   delay: 15
+
+    # - name: query a pre_change analysis
+    #   cisco.nd.nd_pcv_delta_analysis: &nd_query
+    #     insights_group: "{{ ig_name }}"
+    #     site_name: "{{ site_name }}"
+    #     name: "{{ pcv_name }}"
+    #     output_level: debug
+    #   register: pcv_result
+
+    # - name: Check anomalies count
+    #   ansible.builtin.debug:
+    #     msg: "Total number of anomalies is {{ pcv_result.current.anomalies|length }}"
+
+    # - name: Verify pre_change result
+    #   ansible.builtin.assert:
+    #     that:
+    #       - pcv_result.current.anomaly_count.critical.epoch2_only == 0
+    #       - pcv_result.current.anomaly_count.major.epoch2_only == 0
+    #       - pcv_result.current.anomaly_count.minor.epoch2_only == 0
+    #       - pcv_result.current.anomaly_count.warning.epoch2_only == 0
+    #     success_msg: "Pre-change Analysis successful, no new anomalies found"
+    #     fail_msg: "Pre-change Analysis failed, new anomalies have been found"

@@ -1,0 +1,198 @@
+ansible-playbook 2.10.5
+  config file = None
+  configured module search path = ['/Users/adealdag/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/local/lib/python3.8/site-packages/ansible
+  executable location = /usr/local/bin/ansible-playbook
+  python version = 3.8.12 (default, Oct 13 2021, 06:42:42) [Clang 13.0.0 (clang-1300.0.29.3)]
+No config file found; using defaults
+Reading vault password file: /Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/vault.key
+setting up inventory plugins
+host_list declined parsing /Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/tools/pre-change-playbook/inventory.yaml as it did not pass its verify_file() method
+script declined parsing /Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/tools/pre-change-playbook/inventory.yaml as it did not pass its verify_file() method
+Parsed /Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/tools/pre-change-playbook/inventory.yaml inventory source with yaml plugin
+Loading collection cisco.nd from /Users/adealdag/.ansible/collections/ansible_collections/cisco/nd
+Loading callback plugin default of type stdout, v2.0 from /usr/local/lib/python3.8/site-packages/ansible/plugins/callback/default.py
+Attempting to use 'default' callback.
+Skipping callback 'default', as we already have a stdout callback.
+Attempting to use 'junit' callback.
+Attempting to use 'minimal' callback.
+Skipping callback 'minimal', as we already have a stdout callback.
+Attempting to use 'oneline' callback.
+Skipping callback 'oneline', as we already have a stdout callback.
+Attempting to use 'tree' callback.
+
+PLAYBOOK: pre-change-validation.yaml *******************************************
+Positional arguments: pre-change-validation.yaml
+verbosity: 5
+connection: smart
+timeout: 10
+become_method: sudo
+tags: ('all',)
+inventory: ('/Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/tools/pre-change-playbook/inventory.yaml',)
+vault_password_files: ('/Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/vault.key',)
+forks: 5
+1 plays in pre-change-validation.yaml
+
+PLAY [Run Pre-change validation] ***********************************************
+META: ran handlers
+
+TASK [Create a new Pre-Change analysis from file] ******************************
+task path: /Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/tools/pre-change-playbook/pre-change-validation.yaml:14
+Found a vault_id (default) in the vaulttext
+We have a secret associated with vault id (default), will try to use to decrypt None
+Trying to use vault secret=(FileVaultSecret(filename='/Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/vault.key')) id=default to decrypt None
+Trying secret FileVaultSecret(filename='/Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/vault.key') for vault_id=default
+Decrypt successful with secret=FileVaultSecret(filename='/Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/vault.key') and vault_id=default
+Found a vault_id (default) in the vaulttext
+We have a secret associated with vault id (default), will try to use to decrypt None
+Trying to use vault secret=(FileVaultSecret(filename='/Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/vault.key')) id=default to decrypt None
+Trying secret FileVaultSecret(filename='/Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/vault.key') for vault_id=default
+Decrypt successful with secret=FileVaultSecret(filename='/Users/adealdag/Documents/Projects/Git/ansible-demos/aci-iac-ansible-pipeline-demo-v2/vault.key') and vault_id=default
+Loading collection ansible.netcommon from /Users/adealdag/.ansible/collections/ansible_collections/ansible/netcommon
+<vnd02-mdr1.cisco.com> attempting to start connection
+<vnd02-mdr1.cisco.com> using connection plugin ansible.netcommon.httpapi
+Found ansible-connection at path /usr/local/bin/ansible-connection
+<vnd02-mdr1.cisco.com> local domain socket does not exist, starting it
+<vnd02-mdr1.cisco.com> control socket path is /Users/adealdag/.ansible/pc/d2010d61f1
+<vnd02-mdr1.cisco.com> Loading collection ansible.netcommon from /Users/adealdag/.ansible/collections/ansible_collections/ansible/netcommon
+<vnd02-mdr1.cisco.com> Loading collection cisco.nd from /Users/adealdag/.ansible/collections/ansible_collections/cisco/nd
+<vnd02-mdr1.cisco.com> local domain socket listeners started successfully
+<vnd02-mdr1.cisco.com> loaded API plugin ansible_collections.cisco.nd.plugins.httpapi.nd from path /Users/adealdag/.ansible/collections/ansible_collections/cisco/nd/plugins/httpapi/nd.py for platform type cisco.nd.nd
+<vnd02-mdr1.cisco.com> 
+<vnd02-mdr1.cisco.com> local domain socket path is /Users/adealdag/.ansible/pc/d2010d61f1
+<vnd02-mdr1.cisco.com> ESTABLISH LOCAL CONNECTION FOR USER: adealdag
+<vnd02-mdr1.cisco.com> EXEC /bin/sh -c '( umask 77 && mkdir -p "` echo /Users/adealdag/.ansible/tmp/ansible-local-733530lyol14k `"&& mkdir "` echo /Users/adealdag/.ansible/tmp/ansible-local-733530lyol14k/ansible-tmp-1657650589.8253062-73357-168885092193699 `" && echo ansible-tmp-1657650589.8253062-73357-168885092193699="` echo /Users/adealdag/.ansible/tmp/ansible-local-733530lyol14k/ansible-tmp-1657650589.8253062-73357-168885092193699 `" ) && sleep 0'
+Including module_utils file ansible/__init__.py
+Including module_utils file ansible/module_utils/__init__.py
+Including module_utils file ansible/module_utils/basic.py
+Including module_utils file ansible/module_utils/_text.py
+Including module_utils file ansible/module_utils/common/_collections_compat.py
+Including module_utils file ansible/module_utils/common/__init__.py
+Including module_utils file ansible/module_utils/common/_json_compat.py
+Including module_utils file ansible/module_utils/common/_utils.py
+Including module_utils file ansible/module_utils/common/file.py
+Including module_utils file ansible/module_utils/common/parameters.py
+Including module_utils file ansible/module_utils/common/collections.py
+Including module_utils file ansible/module_utils/common/process.py
+Including module_utils file ansible/module_utils/common/sys_info.py
+Including module_utils file ansible/module_utils/common/text/converters.py
+Including module_utils file ansible/module_utils/common/text/__init__.py
+Including module_utils file ansible/module_utils/common/text/formatters.py
+Including module_utils file ansible/module_utils/common/validation.py
+Including module_utils file ansible/module_utils/common/warnings.py
+Including module_utils file ansible/module_utils/compat/selectors.py
+Including module_utils file ansible/module_utils/compat/__init__.py
+Including module_utils file ansible/module_utils/compat/_selectors2.py
+Including module_utils file ansible/module_utils/distro/__init__.py
+Including module_utils file ansible/module_utils/distro/_distro.py
+Including module_utils file ansible/module_utils/parsing/convert_bool.py
+Including module_utils file ansible/module_utils/parsing/__init__.py
+Including module_utils file ansible/module_utils/pycompat24.py
+Including module_utils file ansible/module_utils/six/__init__.py
+Including module_utils file ansible_collections/cisco/nd/plugins/module_utils/nd.py
+Including module_utils file ansible/module_utils/connection.py
+Including module_utils file ansible/module_utils/common/json.py
+Including module_utils file ansible_collections/__init__.py
+Including module_utils file ansible_collections/cisco/__init__.py
+Including module_utils file ansible_collections/cisco/nd/__init__.py
+Including module_utils file ansible_collections/cisco/nd/plugins/__init__.py
+Including module_utils file ansible_collections/cisco/nd/plugins/module_utils/__init__.py
+Including module_utils file ansible_collections/cisco/nd/plugins/module_utils/ndi.py
+<vnd02-mdr1.cisco.com> Attempting python interpreter discovery
+<vnd02-mdr1.cisco.com> EXEC /bin/sh -c 'echo PLATFORM; uname; echo FOUND; command -v '"'"'/usr/bin/python'"'"'; command -v '"'"'python3.7'"'"'; command -v '"'"'python3.6'"'"'; command -v '"'"'python3.5'"'"'; command -v '"'"'python2.7'"'"'; command -v '"'"'python2.6'"'"'; command -v '"'"'/usr/libexec/platform-python'"'"'; command -v '"'"'/usr/bin/python3'"'"'; command -v '"'"'python'"'"'; echo ENDFOUND && sleep 0'
+<vnd02-mdr1.cisco.com> Python interpreter discovery fallback (unsupported platform for extended discovery: darwin)
+Using module file /Users/adealdag/.ansible/collections/ansible_collections/cisco/nd/plugins/modules/nd_pcv.py
+<vnd02-mdr1.cisco.com> PUT /Users/adealdag/.ansible/tmp/ansible-local-733530lyol14k/tmpm6xam9h8 TO /Users/adealdag/.ansible/tmp/ansible-local-733530lyol14k/ansible-tmp-1657650589.8253062-73357-168885092193699/AnsiballZ_nd_pcv.py
+<vnd02-mdr1.cisco.com> EXEC /bin/sh -c 'chmod u+x /Users/adealdag/.ansible/tmp/ansible-local-733530lyol14k/ansible-tmp-1657650589.8253062-73357-168885092193699/ /Users/adealdag/.ansible/tmp/ansible-local-733530lyol14k/ansible-tmp-1657650589.8253062-73357-168885092193699/AnsiballZ_nd_pcv.py && sleep 0'
+<vnd02-mdr1.cisco.com> EXEC /bin/sh -c '/usr/bin/python3 /Users/adealdag/.ansible/tmp/ansible-local-733530lyol14k/ansible-tmp-1657650589.8253062-73357-168885092193699/AnsiballZ_nd_pcv.py && sleep 0'
+<vnd02-mdr1.cisco.com> EXEC /bin/sh -c 'rm -f -r /Users/adealdag/.ansible/tmp/ansible-local-733530lyol14k/ansible-tmp-1657650589.8253062-73357-168885092193699/ > /dev/null 2>&1 && sleep 0'
+The full traceback is:
+  File "/var/folders/y8/3_y2cn992mg29j4t9x1xvk200000gn/T/ansible_cisco.nd.nd_pcv_payload_fvyjk15l/ansible_cisco.nd.nd_pcv_payload.zip/ansible_collections/cisco/nd/plugins/module_utils/nd.py", line 205, in request
+    info = conn.send_file_request(method, uri, file, data)
+  File "/var/folders/y8/3_y2cn992mg29j4t9x1xvk200000gn/T/ansible_cisco.nd.nd_pcv_payload_fvyjk15l/ansible_cisco.nd.nd_pcv_payload.zip/ansible/module_utils/connection.py", line 195, in __rpc__
+    raise ConnectionError(to_text(msg, errors='surrogate_then_replace'), code=code)
+fatal: [vnd02-mdr1.cisco.com]: FAILED! => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "current": {},
+    "data": null,
+    "httpapi_logs": [
+        [
+            "info",
+            "send_request() - send_request method called"
+        ],
+        [
+            "info",
+            "send_request() - connection.send(/sedgeapi/v1/cisco-nir/api/api/telemetry/v2/config/insightsGroup/dc_spain/prechangeAnalysis?$sort=-analysisSubmissionTime, None, GET, {'Content-Type': 'application/json'})"
+        ],
+        [
+            "vvv",
+            "ESTABLISH HTTP(S) CONNECTFOR USER: admin TO https://vnd02-mdr1.cisco.com:443"
+        ],
+        [
+            "info",
+            "login() - login method called for vnd02-mdr1.cisco.com"
+        ],
+        [
+            "info",
+            "login() - previous auth not found sending login POST to vnd02-mdr1.cisco.com"
+        ],
+        [
+            "info",
+            "login() - connection.send(/login, LOGIN_PAYLOAD_NOT_SHOWN, POST, {'Content-Type': 'application/json'})"
+        ],
+        [
+            "info",
+            "send_request() - send_request method called"
+        ],
+        [
+            "info",
+            "send_request() - connection.send(/sedgeapi/v1/cisco-nir/api/api/telemetry/v2/config/insightsGroup, None, GET, {'Content-Type': 'application/json'})"
+        ],
+        [
+            "info",
+            "send_request() - send_request method called"
+        ],
+        [
+            "info",
+            "send_request() - connection.send(/sedgeapi/v1/cisco-nir/api/api/telemetry/v2/events/insightsGroup/dc_spain/fabric/MLG01/epochs?$size=1&$status=FINISHED, None, GET, {'Content-Type': 'application/json'})"
+        ]
+    ],
+    "invocation": {
+        "module_args": {
+            "description": null,
+            "file": "config.json",
+            "host": null,
+            "ig_name": "dc_spain",
+            "insights_group": "dc_spain",
+            "login_domain": "DefaultAuth",
+            "manual": null,
+            "name": "default_pcv_name",
+            "output_level": "debug",
+            "password": null,
+            "port": null,
+            "site_name": "MLG01",
+            "state": "present",
+            "timeout": 30,
+            "use_proxy": null,
+            "use_ssl": null,
+            "username": null,
+            "validate_certs": null
+        }
+    },
+    "method": "POST",
+    "msg": "ND HTTPAPI create data field Exception: [Errno 30] Read-only file system: 'data.json' - Traceback (most recent call last):\n  File \"/Users/adealdag/.ansible/collections/ansible_collections/cisco/nd/plugins/httpapi/nd.py\", line 232, in send_file_request\n    with open('data.json', 'w') as data_file:\nOSError: [Errno 30] Read-only file system: 'data.json'\n",
+    "previous": {},
+    "proposed": {},
+    "response": "OK (7900 bytes)",
+    "sent": {},
+    "socket": "/Users/adealdag/.ansible/pc/d2010d61f1",
+    "status": 200,
+    "url": "https://vnd02-mdr1.cisco.com:443/sedgeapi/v1/cisco-nir/api/api/telemetry/v2/events/insightsGroup/dc_spain/fabric/MLG01/epochs?$size=1&$status=FINISHED"
+}
+
+PLAY RECAP *********************************************************************
+vnd02-mdr1.cisco.com       : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+

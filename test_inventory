@@ -1,0 +1,10 @@
+[mso]
+nd ansible_host=172.31.218.113 ansible_user=admin ansible_password="ins3965!"
+
+[mso:vars]
+ansible_connection=ansible.netcommon.httpapi
+ansible_network_os=cisco.nd.nd
+ansible_httpapi_validate_certs=False
+ansible_httpapi_use_ssl=True
+ansible_httpapi_use_proxy=True
+ansible_python_interpreter=/Users/cizhao/cindy_vir_3.9/bin/python3.9

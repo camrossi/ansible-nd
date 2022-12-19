@@ -1,0 +1,53 @@
+# Pre-change validation - Creates a pre-change validation using a JSON file, waits for the result and evaluates it 
+---
+
+- name: Run Pre-change validation
+  hosts: nd
+  gather_facts: no
+
+  vars:
+    ig_name: dc_spain
+    site_name: MLG01
+    pcv_name: default_pcv_name
+
+  tasks:
+    - name: Present Pre-Change analysis for updating epg
+    cisco.nd.nd_pcv:
+      <<: *nd_info
+      ig_name: '{{ ig_name }}'
+      site_name: prod-fabric
+      name: test_update_epg
+      manual: |
+          [
+              {
+                  "fvAEPg": {
+                      "attributes": {
+                          "descr": "",
+                          "exceptionTag": "",
+                          "floodOnEncap": "disabled",
+                          "fwdCtrl": "none",
+                          "hasMcastSource": "no",
+                          "isAttrBasedEPg": "no",
+                          "matchT": "AtleastOne",
+                          "nameAlias": "",
+                          "pcEnfPref": "unenforced",
+                          "prefGrMemb": "exclude",
+                          "prio": "unspecified",
+                          "shutdown": "no",
+                          "dn": "uni/tn-common/ap-default/epg-epg",
+                          "name": "epg",
+                          "pcv_status": "created"
+                      },
+                      "children": [{
+                          "fvRsBd": {
+                              "attributes": {
+                                  "tnFvBDName": "",
+                                  "pcv_status": ""
+                              }
+                          }
+                      }]
+                  }
+              }
+          ]
+      state: present
+    register: present_epg
