@@ -168,7 +168,7 @@ def main():
 
     elif state == 'present':
         nd.previous = nd.existing
-        base_epoch_data = ndi.get_epochs(insights_group, site_name)
+        base_epoch_data = ndi.get_last_epoch(insights_group, site_name)
 
         data = {
             "allowUnsupportedObjectModification": "true",

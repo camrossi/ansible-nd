@@ -54,12 +54,27 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.nd.plugins.module_utils.nd import NDModule, nd_argument_spec
 from ansible_collections.cisco.nd.plugins.module_utils.ndi import NDI
 
+hitcount_by_map = {
+    'Epg': 'hitcountByEpgPair',
+    'EpgContract': 'hitcountByEpgPairContract',
+    'EpgContractFilter': 'hitcountByEpgPairContractFilter',
+    'EpgTenant': 'hitcountByEpgpairTenantPair',
+    'Tenant': 'hitcountByTenantPair',
+    'EpgLeaf': 'hitcountByEpgPairLeaf',
+    'EpgContractLeaf': 'hitcountByEpgPairContractLeaf',
+    'EpgContractFilterLeaf': 'hitcountByEpgPairContractFilterLeaf',
+    'EpgTenantLeaf': 'hitcountByEpgPairTenantPairLeaf',
+    'TenantPairLeaf': 'hitcountByTenantPairLeaf',
+}
+
+
 def main():
     argument_spec = nd_argument_spec()
     argument_spec.update(
         insights_group=dict(type='str', required=True, aliases=[ "fab_name", "ig_name" ]),
         file=dict(type='str', default=""),
         site_name=dict(type='str', required=True, aliases=[ "site" ]),
+        hitcount_by=dict(type='str', default="EpgContractLeaf", choices=list(hitcount_by_map.keys())),
     )
 
     module = AnsibleModule(
@@ -72,8 +87,9 @@ def main():
     file = nd.params.get('file')
     site_name = nd.params.get('site_name')
     insights_group = nd.params.get('insights_group')
-    ndi.get_contract_hit_stats(insights_group, site_name)
-    ndi.contract_hit_stats_to_csv(file)
+    hitcount_by =  nd.params.get('hitcount_by')
+    stats = ndi.get_contract_hit_stats(insights_group, site_name, hitcount_by_map[hitcount_by])
+    ndi.contract_hit_stats_to_csv(file, stats)
     nd.exit_json()
 if __name__ == "__main__":
     main()

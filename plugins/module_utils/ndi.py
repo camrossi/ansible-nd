@@ -6,7 +6,9 @@
 
 from __future__ import (absolute_import, division, print_function)
 from html import entities
+import time
 import json
+import csv
 from jsonpath_ng import parse
 __metaclass__ = type
 
@@ -20,6 +22,7 @@ class NDI:
         self.event_insight_group_path = "events/insightsGroup/{0}/fabric/{1}"
         self.compliance_path = "model/aciPolicy/complianceAnalysis"
         self.epoch_delta_ig_path = "epochDelta/insightsGroup/{0}/fabric/{1}/job/{2}/health/view"
+        self.tcam_hitcount_path = "/model/aciPolicy/tcam/hitcountByRules"
 
     def get_site_id(self, ig_name, site_name, **kwargs):
         obj = self.nd.query_obj(self.config_ig_path, **kwargs)
@@ -39,7 +42,8 @@ class NDI:
                 pcv_result = obj['value']['data']
         return pcv_result
 
-    def get_epochs(self, ig_name, site_name):
+    def get_last_epoch(self, ig_name, site_name):
+        ''' Get the latest epoch for the given site and ig_name'''
         ig_base_path = self.event_insight_group_path.format(ig_name, site_name)
         path = '{0}/epochs?$size=1&$status=FINISHED&%24epochType=ONLINE%2C+OFFLINE&%24sort=-collectionTime%2C-analysisStartTime'.format(ig_base_path)
         obj = self.nd.query_obj(path, prefix=self.prefix)
@@ -460,45 +464,66 @@ class NDI:
         self.cmap = {}
         f.close()
 
-    def get_contract_hit_stats(self,ig_name, site_name):
-        site_id = self.get_site_id(ig_name, site_name, prefix=self.prefix)
-        path = '/telemetry/v2/events/insightsGroup/bKash/fabric/ST-bb1e6/model/aciPolicy/tcam/rules?contract=uni%2Ftn-UAT-TENANT%2Fbrc-UAT-T-COREAPI-CON&%24epochId=0e5604f9-ad745992-5393-36c6-b18d-358fb1b8b0f0&%24sort=&%24page=0&%24size=100"'
-        obj = self.nd.query_obj(path, prefix=self.prefix)
-        '''
-        latest_epoch = self.getEpochs(ag_name)[-1]['epoch_id']
-        #latest_epoch = "737ea995-b313f61d-6e6f-3971-9b34-809269d6a693"
-        self.logger.debug("last epoch id is %s", latest_epoch)
+    def get_contract_hit_stats(self,ig_name, site_name, hitcount_by):
+        epoch = self.get_last_epoch(ig_name, site_name)
+        page_size=200
         page = 0
-        objPerPage=200
         has_more_data = True
-        tcam_data = []
-        # As long as there is more data get it
+        hit_stats = []
+        f=open('/tmp/ndi_tcam.log', 'w')
+        # As long as there is more data append to a list of tcam_stats
         while has_more_data:
-            self.logger.info("Requesting %d objects per page", objPerPage)
-            #I get data sorter by tcam hists for hitcount-by-rules --> hitcount-by-epgpair-contract-filter
-            url = 'https://'+self.ip_addr+'/nae/api/v1/event-services/assured-networks/' + fabric_id +'/model/aci-policy/tcam/hitcount-by-rules/hitcount-by-epgpair-contract-filter?$epoch_id='+latest_epoch+'&$page='+str(page)+'&$size='+str(objPerPage)+'&$sort=-cumulative_count&$view=histogram'
             start = time.time()
-            req = requests.get(url, headers=self.http_headers, cookies=self.session_cookie, verify=False)
-            end = time.time()
-            if req.status_code == 200:
-                self.logger.info("Page retrieved")
-            else:
-                self.logger.info("error getting TCAM", req.json())
+            ig_base_path = self.event_insight_group_path.format(ig_name, site_name)
+            path = ig_base_path + self.tcam_hitcount_path + "/{0}?%24epochId={1}&%24view=histogram&%24page={2}&%24size={3}".format(hitcount_by, epoch.get('epochId'), page, page_size)
+            obj = self.nd.query_obj(path, prefix=self.prefix)  
+            has_more_data = obj['value']['dataSummary']['hasMoreData']
+            #curent_page = obj['value']['dataSummary']['currentPageNumber']
+            actual_page_size = obj['value']['dataSummary']['pageSize']
+            total_page_count = obj['value']['dataSummary']['totalPageCount']
             page = page + 1
-            has_more_data = req.json()['value']['data_summary']['has_more_data']
-            total_pages =  req.json()['value']['data_summary']['total_page_count']
-            actual_page_size =  req.json()['value']['data_summary']['page_size']
-            tcam_data.append((req.json()['value']['data']))
-            self.logger.info("Page %d/%d processed in %d seconds", page, total_pages, end - start)
-            self.logger.info("Requested Page size %d. Actual Page Size %d", objPerPage, actual_page_size)
-        self.logger.info("Pages extracted %d", page)
-        '''
-        return obj['value']['data'][0]
-    def contract_hit_stats_to_csv(self, file):
+            elapsed_time = time.time() - start
+            f.write("Page {0} of {1}, requested page size {2}, actual page size {3}, has more data {4}, Request took {5:.2f} to execute \n".format(page, total_page_count, page_size, actual_page_size, has_more_data, elapsed_time))
+            f.flush()
+            hit_stats.append((obj['value']['data']))
+        f.close()
+        return hit_stats
+    def contract_hit_stats_to_csv(self, file, stats):
+        bucket_objects = [
+            'consumerVrf',
+            'providerTenant',
+            'consumerTenant',
+            'providerEpg',
+            'consumerEpg',
+            'contract',
+            'filter',
+            'leaf'
+        ]
+        output_objects = ['cumulativeCount', 'hourCount', 'dayCount', 'monthCount', 'tcamEntryCount']
+        hit_stats = []
+        for page in stats:
+            for stat in page:
+                tdic = {}
+                for key, value in stat.items():
+                    if key == "bucket":
+                        for obj in bucket_objects:
+                            if obj in value and 'dn' in value[obj]:
+                                tdic[obj] = value[obj]['dn'].replace("uni/", "")
+                            elif obj in value and 'nodeName' in value[obj]:
+                                tdic[obj] = value[obj]['nodeName']
+                            else:
+                                tdic[obj] = "N/A"
+                    if key == "output":
+                        for obj in output_objects:
+                            if obj in value:
+                                tdic[obj] = value[obj]
+                            else:
+                                tdic[obj] = "N/A"
+                hit_stats.append(tdic)                
         with open(file, 'w') as f:
-            writer = csv.writer(f)
-            writer.writerow(['contract', 'epg', 'hitcount'])
-            for contract in self.contract_hit_stats:
-                for epg in contract['epg']:
-                    writer.writerow([contract['contract'], epg['epg'], epg['hitcount']])
+            fieldnames = bucket_objects + output_objects
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            for stat in hit_stats:
+                writer.writerow(stat)
         f.close()
